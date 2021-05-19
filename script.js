@@ -31,5 +31,28 @@ let turnClick = (square) =>{
 let turn = (squareID,player) =>{
     board[squareID] = player;
     document.getElementById(squareID).innerText = player;
+    let gameWon = checkWin(board,player);
+    if(gameWon)
+        gameOver(gameWon);
 
+}
+
+let checkWin = (board,player) =>{
+    let plays = board.reduce((a,e,i) => (e==player)?a.concat(i) : a, []);
+    let gameWon = null;
+    for(let [index,win] of win_combinations.entries()){
+         if(win.every(elem=> plays.indexOf(elem) >-1)){
+            gameWon = {index:index,player:player};
+            break;
+         }
+    }
+    return gameWon;
+}
+let gameOver = (gameWon) =>{
+    for(let index of win_combinations[gameWon.index]){
+        document.getElementById(index).style.backgroundColor = gameWon.player == player1 ? "blue":"red";
+    }
+    for(var i=0;i<cells.length;i++){
+        cells[i].removeEventListener('click',turnClick,false);
+    }
 }
